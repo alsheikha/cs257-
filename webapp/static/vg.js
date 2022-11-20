@@ -8,6 +8,7 @@ window.onload = initialize;
 
 function initialize() {
     
+    
     loadPlatformSelector();
     loadGenreSelector();
     loadPublisherSelector();
@@ -49,24 +50,27 @@ function loadMainTable() {
     .then((response) => response.json())
 
     .then(function(topgames) {
-        let tableBody = '<tr>'
-        + '<td>' + 'Rank' + '</td>'
-        + '<td>' + 'Name' + '</td>'
-        + '<td>' + 'Platform' + '</td>'
-        + '<td>' + 'Year' + '</td>'
-        + '<td>' + 'Genre' + '</td>'
-        + '<td>' + 'Publisher' + '</td>'
-        + '<td>' + 'Global Sales (millions)' + '</td>'
-        + '</tr>\n';
+        let tableBody = '<thead class = "table-active"><tr>'
+        + '<th scope  = "col">' + 'Name' + '</th>'
+        + '<th scope  = "col">' + 'Rank' + '</th>'
+        + '<th scope  = "col">' + 'Platform' + '</th>'
+        + '<th scope  = "col">' + 'Year' + '</th>'
+        + '<th scope  = "col">' + 'Genre' + '</th>'
+        + '<th scope  = "col">' + 'Publisher' + '</th>'
+        + '<th scope  = "col">' + 'Global Sales (millions)' + '</th>'
+        + '</tr></thead>\n';
         for (let k = 0; k < topgames.length; k++) {
             let game = topgames[k];
             tableBody += '<tr>'
                             + '<td>' + game['Rank'] + '</td>'
-                            + '<td>' + game['Name'] + '</td>'
-                            + '<td>' + game['Platform'] + '</td>'
+                            + '<td><a  class = "link-name" target="_blank" rel="noopener noreferrer"  href="https://en.wikipedia.org/wiki/' + game['Name'] + '">' + game['Name']+'</a>'
+                            + '</td>'
+                            + '<td><a  class = "link-platform" target="_blank" rel="noopener noreferrer"  href="https://en.wikipedia.org/wiki/' + game['Platform'] + '">' + game['Platform']+'</a>'
+                            + '</td>'
                             + '<td>' + game['Year'] + '</td>'
                             + '<td>' + game['Genre'] + '</td>'
-                            + '<td>' + game['Publisher'] + '</td>'
+                            + '<td><a  class = "link-publisher" target="_blank" rel="noopener noreferrer"  href="https://en.wikipedia.org/wiki/' + game['Publisher'] + '">' + game['Publisher']+'</a>'
+                            + '</td>'
                             + '<td>' + game['Sales'] + '</td>'
                             + '</tr>\n';
         }
@@ -152,7 +156,8 @@ function loadGenreSelector() {
 }
 
 function loadPublisherSelector() {
-    let url = getAPIBaseURL() + '/publishers/';
+
+    let url = getAPIBaseURL() + '/publishers/' ;
 
     // Send the request to the books API /authors/ endpoint
     fetch(url, {method: 'get'})
@@ -188,18 +193,11 @@ function loadPublisherSelector() {
 
 function onSelectionChanged() {
 
-    let element = document.getElementById('platform_selector');
+    let platformID = document.getElementById('platform_selector').value;
   
-    let platformID = element.value; 
+    let genreID = document.getElementById('genre_selector').value;
 
-    let element2 = document.getElementById('genre_selector');
-
-    let genreID = element2.value;   
-
-    let element3 = document.getElementById('publisher_selector');
-    
-    let publisherID = element3.value; 
-    
+    let publisherID = document.getElementById('publisher_selector').value      
     
     let url = getAPIBaseURL() + '/' + platformID + '/' +  genreID + '/'+  publisherID ;
 
@@ -208,27 +206,32 @@ function onSelectionChanged() {
     .then((response) => response.json())
 
     .then(function(topgames) {
-        let tableBody = '<tr>'
-        + '<td>' + 'Rank' + '</td>'
-        + '<td>' + 'Name' + '</td>';
-        if (platformID == '1'){tableBody += '<td>' + 'Platform' + '</td>';}
+        let tableBody = '<thead class = "table-active"><tr>'
+        + '<th>' + 'Rank' + '</th>'
+        + '<th>' + 'Name' + '</th>';
+        if (platformID == '1'){tableBody += '<th>' + 'Platform' + '</th>';}
         tableBody +=
-         '<td>' + 'Year' + '</td>';
-         if (genreID == '1'){ tableBody += '<td>' + 'Genre' + '</td>';}
-         if (publisherID == '1'){tableBody += '<td>' + 'Publisher' + '</td>';}
+         '<th>' + 'Year' + '</th>';
+         if (genreID == '1'){ tableBody += '<th>' + 'Genre' + '</th>';}
+         if (publisherID == '1'){tableBody += '<th>' + 'Publisher' + '</th>';}
          tableBody+=
-         '<td>' + 'Global Sales (millions)' + '</td>'
-        + '</tr>\n';
+         '<th>' + 'Global Sales (millions)' + '</th>'
+        + '</tr></thead>\n';
+
+
         for (let k = 0; k < topgames.length; k++) {
             let game = topgames[k];
             tableBody += '<tr>'
-                            + '<td>' + game['Rank'] + '</td>'
-                            + '<td>' + game['Name'] + '</td>';
-                            if (platformID == '1'){tableBody += '<td>' + game['Platform'] + '</td>';}
+                            + '<td>'+ game['Rank'] + '</td>'
+                            + '<td><a class="link-name" href="https://en.wikipedia.org/wiki/' + game['Name'] + '">' + game['Name']+'</a>'
+                            + '</td>';
+                            if (platformID == '1'){tableBody += '<td><a class="link-platform" href="https://en.wikipedia.org/wiki/' + game['Platform'] + '">' + game['Platform']+'</a>'
+                            + '</td>';}
                             tableBody +=
                              '<td>' + game['Year'] + '</td>';
-                            if (genreID == '1'){tableBody += '<td>' + game['Genre'] + '</td>';}
-                            if (publisherID == '1'){tableBody += '<td>' + game['Publisher'] + '</td>';}
+                            if (genreID == '1'){tableBody += '<td>' + game['Genre']  +'</td>';}
+                            if (publisherID == '1'){tableBody += '<td><a class="link-publisher" href="https://en.wikipedia.org/wiki/' + game['Publisher'] + '">' + game['Publisher']+'</a>'
+                             + '</td>';}
                              tableBody +=
                              '<td>' + game['Sales'] + '</td>'
                             + '</tr>\n';
@@ -239,6 +242,8 @@ function onSelectionChanged() {
         if (gamesTable) {
             gamesTable.innerHTML = tableBody;
         }
+
+
     })
 
     .catch(function(error) {
