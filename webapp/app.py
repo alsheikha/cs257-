@@ -15,6 +15,10 @@ app.register_blueprint(api.api, url_prefix='/api')
 def home():
     return flask.render_template('index.html')
 
+@app.route('/About-me') 
+def about():
+    return flask.render_template('about.html')
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Video game sales application, including API & DB')
     parser.add_argument('host', help='the host to run on')

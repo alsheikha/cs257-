@@ -8,7 +8,6 @@ window.onload = initialize;
 
 function initialize() {
     
-    
     loadPlatformSelector();
     loadGenreSelector();
     loadPublisherSelector();
@@ -37,6 +36,7 @@ function getAPIBaseURL() {
                     + '/api';
     return baseURL;
 }
+
 
 function loadMainTable() {
 
@@ -159,17 +159,11 @@ function loadPublisherSelector() {
 
     let url = getAPIBaseURL() + '/publishers/' ;
 
-    // Send the request to the books API /authors/ endpoint
     fetch(url, {method: 'get'})
 
-    // When the results come back, transform them from a JSON string into
-    // a Javascript object (in this case, a list of author dictionaries).
     .then((response) => response.json())
 
-    // Once you have your list of author dictionaries, use it to build
-    // an HTML table displaying the author names and lifespan.
     .then(function(publishers) {
-        // Add the <option> elements to the <select> element
         let selectorBody = '<option value=1 ">All Publishers</option>\n';
         for (let k = 0; k < publishers.length; k++) {
             let publisher = publishers[k];
@@ -184,14 +178,13 @@ function loadPublisherSelector() {
         }
     })
 
-    // Log the error if anything went wrong during the fetch.
     .catch(function(error) {
         console.log(error);
     });
 }
 
 
-function onSelectionChanged() {
+function onSelectionChanged() { //Updates table to reflect selections
 
     let platformID = document.getElementById('platform_selector').value;
   
@@ -205,7 +198,7 @@ function onSelectionChanged() {
 
     .then((response) => response.json())
 
-    .then(function(topgames) {
+    .then(function(topgames) { //Table columns depend on selections
         let tableBody = '<thead class = "table-active"><tr>'
         + '<th>' + 'Rank' + '</th>'
         + '<th>' + 'Name' + '</th>';
@@ -237,84 +230,12 @@ function onSelectionChanged() {
                             + '</tr>\n';
         }
 
-        // Put the table body we just built inside the table that's already on the page.
         let gamesTable = document.getElementById('vg_table');
         if (gamesTable) {
             gamesTable.innerHTML = tableBody;
         }
 
 
-    })
-
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-
-
-function loadAuthorsSelector() {
-    let url = getAPIBaseURL() + '/authors/';
-
-    // Send the request to the books API /authors/ endpoint
-    fetch(url, {method: 'get'})
-
-    // When the results come back, transform them from a JSON string into
-    // a Javascript object (in this case, a list of author dictionaries).
-    .then((response) => response.json())
-
-    // Once you have your list of author dictionaries, use it to build
-    // an HTML table displaying the author names and lifespan.
-    .then(function(authors) {
-        // Add the <option> elements to the <select> element
-        let selectorBody = '';
-        for (let k = 0; k < authors.length; k++) {
-            let author = authors[k];
-            selectorBody += '<option value="' + author['id'] + '">'
-                                + author['surname'] + ', ' + author['given_name']
-                                + '</option>\n';
-        }
-
-        let selector = document.getElementById('author_selector');
-        if (selector) {
-            selector.innerHTML = selectorBody;
-        }
-    })
-
-    // Log the error if anything went wrong during the fetch.
-    .catch(function(error) {
-        console.log(error);
-    });
-}
-
-function onAuthorsSelectionChanged() {
-    let element = document.getElementById('author_selector');
-    if (!element) {
-        return;
-    }
-    let authorID = element.value; 
-
-    let url = getAPIBaseURL() + '/books/author/' + authorID;
-
-    fetch(url, {method: 'get'})
-
-    .then((response) => response.json())
-
-    .then(function(books) {
-        let tableBody = '';
-        for (let k = 0; k < books.length; k++) {
-            let book = books[k];
-            tableBody += '<tr>'
-                            + '<td>' + book['title'] + '</td>'
-                            + '<td>' + book['publication_year'] + '</td>'
-                            + '</tr>\n';
-        }
-
-        // Put the table body we just built inside the table that's already on the page.
-        let booksTable = document.getElementById('books_table');
-        if (booksTable) {
-            booksTable.innerHTML = tableBody;
-        }
     })
 
     .catch(function(error) {
